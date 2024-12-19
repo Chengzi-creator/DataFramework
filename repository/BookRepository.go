@@ -16,8 +16,8 @@ func (r *BookRepository) FindBooksByName(name string) ([]models.Book, error) {
 }
 
 // FindBookByID 根据 ID 查询单个书籍信息
-func (r *BookRepository) FindBookByID(bookID string) (models.Book, error) {
+func (r *BookRepository) FindBookByID(bookID int) (*models.Book, error) {
 	var book models.Book
 	err := utils.DB.First(&book, bookID).Error
-	return book, err
+	return &book, err
 }

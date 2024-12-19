@@ -18,15 +18,15 @@ func (s *BookService) SearchBooks(name string) ([]models.Book, error) {
 	if err != nil {
 		return nil, errors.New("数据库查询失败")
 	}
-	
+
 	return books, nil
 }
 
 // GetBookByID 根据书籍 ID 获取单个书籍信息
-func (s *BookService) GetBookByID(bookID string) (models.Book, error) {
+func (s *BookService) GetBookByID(bookID int) (*models.Book, error) {
 	book, err := s.Repo.FindBookByID(bookID)
 	if err != nil {
-		return models.Book{}, errors.New("书籍不存在或查询失败")
+		return nil, errors.New("书籍不存在或查询失败")
 	}
 	return book, nil
 }

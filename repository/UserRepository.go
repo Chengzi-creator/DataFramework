@@ -17,3 +17,12 @@ func (r *UserRepository) FindByUsername(username string) (*models.User, error) {
 	}
 	return &user, nil
 }
+
+func (r *UserRepository) FindByUserId(userid int) (*models.User, error) {
+	var user models.User
+	err := utils.DB.Where("user_id = ?", userid).First(&user).Error
+	if err != nil {
+		return nil, err
+	}
+	return &user, nil
+}

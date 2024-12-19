@@ -38,3 +38,25 @@ func Login(c *gin.Context) {
 	})
 	return
 }
+
+func ShowUserinfo(c *gin.Context) {
+	userid, err := utils.GetUserIDFromToken(c)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"msg":  err.Error(),
+		})
+	}
+	user, err := userService.FindByUserID(userid)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"msg":  err.Error(),
+		})
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 1,
+		"user": user,
+	})
+
+}

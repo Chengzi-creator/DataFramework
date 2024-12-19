@@ -5,6 +5,7 @@ import (
 	"InterLibrarySystem/service"
 	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
 )
 
 var bookService = service.BookService{
@@ -43,7 +44,7 @@ func SearchBooks(c *gin.Context) {
 
 // SearchBookByID 根据书籍 ID 查询书籍信息
 func SearchBookByID(c *gin.Context) {
-	bookID := c.Param("book_id")
+	bookID, _ := strconv.Atoi(c.Param("book_id"))
 
 	// 调用 Service 层
 	book, err := bookService.GetBookByID(bookID)

@@ -24,3 +24,12 @@ func (s *UserService) Login(username string, password string) (*models.User, err
 	}
 	return user, nil
 }
+
+// FindByUserID 根据userid获取用户信息
+func (s *UserService) FindByUserID(userid int) (*models.User, error) {
+	user, err := s.UserRepo.FindByUserId(userid)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
+}

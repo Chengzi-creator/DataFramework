@@ -29,9 +29,10 @@ func main() {
 		UserGroup.GET("/search", controller.SearchBooks)
 		{
 			UserGroup.GET("/search/:book_id", controller.SearchBookByID)
-			UserGroup.GET("/search/:book_id", controller.C)
+			UserGroup.POST("/search/:book_id", controller.CreateTicket)
 		}
 		UserGroup.GET("/ticket", controller.GetTicketsByUserID)
+		UserGroup.GET("/userinfo", controller.ShowUserinfo)
 	}
 
 	//管理员
@@ -39,6 +40,11 @@ func main() {
 	AdministerGroup := r.Group("/administer")
 	{
 		AdministerGroup.GET("/index")
+		AdministerGroup.GET("/search", controller.SearchBooks)
+		{
+			AdministerGroup.GET("/search", controller.SearchBooks)
+		}
+		AdministerGroup.GET("/userinfo", controller.ShowUserinfo)
 	}
 
 	//启动服务
