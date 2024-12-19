@@ -26,6 +26,14 @@ func SearchBooks(c *gin.Context) {
 		return
 	}
 
+	//判断符合书籍是否空
+	if len(books) == 0 {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"msg":  "暂无符合书籍",
+		})
+	}
+
 	// 返回结果
 	c.JSON(http.StatusOK, gin.H{
 		"code":  1,

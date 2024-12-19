@@ -2,12 +2,9 @@ package main
 
 import (
 	"InterLibrarySystem/controller"
-	"InterLibrarySystem/middleware"
-	"InterLibrarySystem/models"
 	"InterLibrarySystem/utils"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
-	"net/http"
 )
 
 func main() {
@@ -25,43 +22,21 @@ func main() {
 	r.POST("/login", controller.Login)
 
 	//普通用户
-	UserGroup := r.Group("/user", middleware.AuthMiddleware())
+	//UserGroup := r.Group("/user", middleware.AuthMiddleware())  需验证token
+	UserGroup := r.Group("/user")
 	{
 		UserGroup.GET("/index")
 		UserGroup.GET("/search", controller.SearchBooks)
 		{
 			UserGroup.GET("/search/:book_id", controller.SearchBookByID)
+			UserGroup.GET("/search/:book_id", controller.C)
 		}
-		UserGroup.GET("/ticket", func(c *gin.Context) {
-			//从token中获得userid
-			userid, exists := c.Get("userid")
-			if !exists {
-				c.JSON(http.StatusOK, gin.H{
-					"code": 0,
-					"msg":  "未授权",
-				})
-				return
-			}
-			userid = userid.(int)
-			//根据userid查询ticket
-			var ticket []models.Ticket
-			err := utils.DB.Where("user_id=?", userid).Find(&ticket).Error
-			if err != nil {
-				c.JSON(http.StatusOK, gin.H{
-					"code": 0,
-					"msg":  "查询失败",
-				})
-				return
-			}
-			c.JSON(http.StatusOK, gin.H{
-				"code":   1,
-				"ticket": ticket,
-			})
-		})
+		UserGroup.GET("/ticket", controller.GetTicketsByUserID)
 	}
 
 	//管理员
-	AdministerGroup := r.Group("/administer", middleware.AuthMiddleware())
+	//AdministerGroup := r.Group("/administer", middleware.AuthMiddleware())需验证token
+	AdministerGroup := r.Group("/administer")
 	{
 		AdministerGroup.GET("/index")
 	}

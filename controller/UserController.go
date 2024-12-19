@@ -10,7 +10,7 @@ import (
 )
 
 var userService = service.UserService{
-	UserRepo: &repository.UserRepository{DB: utils.DB},
+	UserRepo: &repository.UserRepository{},
 }
 
 // Login 登录

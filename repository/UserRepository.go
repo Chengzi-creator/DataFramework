@@ -2,17 +2,16 @@ package repository
 
 import (
 	"InterLibrarySystem/models"
-	"github.com/jinzhu/gorm"
+	"InterLibrarySystem/utils"
 )
 
 type UserRepository struct {
-	DB *gorm.DB
 }
 
 // FindByUsername 根据用户名查询用户
-func (r UserRepository) FindByUsername(username string) (*models.User, error) {
+func (r *UserRepository) FindByUsername(username string) (*models.User, error) {
 	var user models.User
-	err := r.DB.Where("username = ?", username).First(&user).Error
+	err := utils.DB.Where("username = ?", username).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
