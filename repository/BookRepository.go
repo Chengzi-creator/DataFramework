@@ -21,3 +21,5 @@ func (r *BookRepository) FindBookByID(bookID int) (*models.Book, error) {
 	err := utils.DB.First(&book, bookID).Error
 	return &book, err
 }
+
+func (r *BookRepository) CreateBook(book models.Book) (*models.Book, error) {}
