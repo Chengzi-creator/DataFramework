@@ -27,9 +27,18 @@ func (s *UserService) Login(username string, password string) (*models.User, err
 
 // FindByUserID 根据userid获取用户信息
 func (s *UserService) FindByUserID(userid int) (*models.User, error) {
-	user, err := s.UserRepo.FindByUserId(userid)
+	user, err := s.UserRepo.FindByUserID(userid)
 	if err != nil {
 		return nil, err
 	}
 	return user, nil
+}
+
+// ChangeByUserID 根据用户ID更改用户信息
+func (s *UserService) ChangeByUserID(user *models.User) error {
+	err := s.UserRepo.ChangeByUserID(user)
+	if err != nil {
+		return err
+	}
+	return nil
 }

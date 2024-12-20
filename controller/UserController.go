@@ -1,12 +1,13 @@
 package controller
 
 import (
+	"InterLibrarySystem/models"
 	"InterLibrarySystem/repository"
 	"InterLibrarySystem/service"
-	"InterLibrarySystem/utils"
 	"github.com/gin-gonic/gin"
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"net/http"
+	"strconv"
 )
 
 var userService = service.UserService{
@@ -18,7 +19,7 @@ func Login(c *gin.Context) {
 	username := c.PostForm("username") //获取username
 	password := c.PostForm("password") //获取password
 
-	//调用service层进行登录操作
+	//进行登录操作
 	user, err := userService.Login(username, password)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
@@ -28,26 +29,21 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	//生成token
-	token, err := utils.GenerateToken(user.ID, user.Username)
 	c.JSON(http.StatusOK, gin.H{
 		"code":          1,
 		"msg":           "登陆成功",
-		"token":         token,
 		"is_administer": user.IsAdminister,
 	})
 	return
 }
 
+// ShowUserinfo 展示用户信息
 func ShowUserinfo(c *gin.Context) {
-	userid, err := utils.GetUserIDFromToken(c)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"code": 0,
-			"msg":  err.Error(),
-		})
-	}
-	user, err := userService.FindByUserID(userid)
+	//获取userid
+	userid := c.Query("userid")
+	uid, _ := strconv.Atoi(userid)
+	//查询信息
+	user, err := userService.FindByUserID(uid)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": 0,
@@ -59,4 +55,34 @@ func ShowUserinfo(c *gin.Context) {
 		"user": user,
 	})
 
+}
+
+// ChangeByUserID 根据用户ID更改用户信息
+func ChangeByUserID(c *gin.Context) {
+	//获取userid
+	userid := c.Query("userid")
+	uid, _ := strconv.Atoi(userid)
+	//获取更改后的信息
+	var newuser models.User
+	err := c.BindJSON(&newuser)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"msg":  err.Error(),
+		})
+	}
+	//查询信息
+	user, err := userService.FindByUserID(uid)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"msg":  err.Error(),
+		})
+		return
+	}
+	//更改信息
+	user.Username = newuser.Username
+	user.Password = newuser.Password
+	user.Address = newuser.Address
+	err = userService.ChangeByUserID(user)
 }

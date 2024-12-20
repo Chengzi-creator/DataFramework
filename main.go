@@ -22,29 +22,28 @@ func main() {
 	r.POST("/login", controller.Login)
 
 	//普通用户
-	//UserGroup := r.Group("/user", middleware.AuthMiddleware())  需验证token
 	UserGroup := r.Group("/user")
 	{
-		UserGroup.GET("/index")
-		UserGroup.GET("/search", controller.SearchBooks)
+		UserGroup.GET("/index")                          //菜单
+		UserGroup.GET("/search", controller.SearchBooks) //搜索
 		{
-			UserGroup.GET("/search/:book_id", controller.SearchBookByID)
-			UserGroup.POST("/search/:book_id", controller.CreateTicket)
+			UserGroup.GET("/search/:book_id", controller.SearchBookByID) //书籍详情
+			UserGroup.POST("/search/:book_id", controller.CreateTicket)  //订单
 		}
-		UserGroup.GET("/ticket", controller.GetTicketsByUserID)
-		UserGroup.GET("/userinfo", controller.ShowUserinfo)
+		UserGroup.GET("/ticket", controller.GetTicketsByUserID) //订单详情
+		UserGroup.GET("/userinfo", controller.ShowUserinfo)     //用户信息
+		UserGroup.PUT("/userinfo", controller.ChangeByUserID)   //更改信息
 	}
 
 	//管理员
-	//AdministerGroup := r.Group("/administer", middleware.AuthMiddleware())需验证token
 	AdministerGroup := r.Group("/administer")
 	{
-		AdministerGroup.GET("/index")
-		AdministerGroup.GET("/search", controller.SearchBooks)
+		AdministerGroup.GET("/index")                          //菜单
+		AdministerGroup.GET("/search", controller.SearchBooks) //搜索
 		{
-			AdministerGroup.GET("/search", controller.SearchBooks)
+			AdministerGroup.GET("/search/:book_id", controller.SearchBookByID) //书籍详情
+			//删除、更改书籍信息
 		}
-		AdministerGroup.GET("/userinfo", controller.ShowUserinfo)
 	}
 
 	//启动服务

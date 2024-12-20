@@ -18,11 +18,21 @@ func (r *UserRepository) FindByUsername(username string) (*models.User, error) {
 	return &user, nil
 }
 
-func (r *UserRepository) FindByUserId(userid int) (*models.User, error) {
+// FindByUserID 根据用户ID查询用户
+func (r *UserRepository) FindByUserID(userid int) (*models.User, error) {
 	var user models.User
 	err := utils.DB.Where("user_id = ?", userid).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
 	return &user, nil
+}
+
+// ChangeByUserID 根据用户ID更改用户信息
+func (r *UserRepository) ChangeByUserID(user *models.User) error {
+	err := utils.DB.Save(user).Error
+	if err != nil {
+		return err
+	}
+	return nil
 }
