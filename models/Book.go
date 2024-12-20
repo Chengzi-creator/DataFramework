@@ -11,7 +11,7 @@ type Book struct {
 	Supplier      string         `gorm:"type:varchar(10)" json:"supplier"`                                        // 供应商信息
 	SeriesNo      int            `gorm:"not null" json:"series_no"`                                               // 系列编号
 	Writer        string         `gorm:"writer" json:"writer"`                                                    // 作者
-	Stores        []Store        `gorm:"foreignKey:BookID;constraint:OnDelete:CASCADE;" json:"-"`                 // 与存储位置的外键关系
+	StoreLocation string         `gorm:"type:varchar(150);not null" json:"store_location"`                        // 存储位置
 	BookShortages []BookShortage `gorm:"foreignKey:BookID;constraint:OnDelete:CASCADE;" json:"-"`                 // 书籍短缺的外键关系
 }
 

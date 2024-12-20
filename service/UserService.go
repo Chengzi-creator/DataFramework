@@ -34,9 +34,18 @@ func (s *UserService) FindByUserID(userid int) (*models.User, error) {
 	return user, nil
 }
 
-// ChangeByUserID 根据用户ID更改用户信息
-func (s *UserService) ChangeByUserID(user *models.User) error {
-	err := s.UserRepo.ChangeByUserID(user)
+// UpdateByUserID 根据用户ID更改用户信息
+func (s *UserService) UpdateByUserID(user *models.User) error {
+	err := s.UserRepo.UpdateByUserID(user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// RegisterNewUser 注册
+func (s *UserService) RegisterNewUser(user *models.User) error {
+	err := s.UserRepo.RegisterNewUser(user)
 	if err != nil {
 		return err
 	}

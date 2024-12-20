@@ -47,6 +47,7 @@ func GetTicketsByUserID(c *gin.Context) {
 	})
 }
 
+// CreateTicket 创建订单
 func CreateTicket(c *gin.Context) {
 	// 获取书籍 ID
 	bookId, err := strconv.Atoi(c.Param("book_id"))

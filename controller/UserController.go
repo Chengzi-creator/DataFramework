@@ -34,7 +34,6 @@ func Login(c *gin.Context) {
 		"msg":           "登陆成功",
 		"is_administer": user.IsAdminister,
 	})
-	return
 }
 
 // ShowUserinfo 展示用户信息
@@ -49,6 +48,7 @@ func ShowUserinfo(c *gin.Context) {
 			"code": 0,
 			"msg":  err.Error(),
 		})
+		return
 	}
 	c.JSON(http.StatusOK, gin.H{
 		"code": 1,
@@ -63,13 +63,14 @@ func ChangeByUserID(c *gin.Context) {
 	userid := c.Query("userid")
 	uid, _ := strconv.Atoi(userid)
 	//获取更改后的信息
-	var newuser models.User
-	err := c.BindJSON(&newuser)
+	var newUser models.User
+	err := c.BindJSON(&newUser)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": 0,
 			"msg":  err.Error(),
 		})
+		return
 	}
 	//查询信息
 	user, err := userService.FindByUserID(uid)
@@ -81,8 +82,33 @@ func ChangeByUserID(c *gin.Context) {
 		return
 	}
 	//更改信息
-	user.Username = newuser.Username
-	user.Password = newuser.Password
-	user.Address = newuser.Address
-	err = userService.ChangeByUserID(user)
+	user.Username = newUser.Username
+	user.Password = newUser.Password
+	user.Address = newUser.Address
+	err = userService.UpdateByUserID(user)
+}
+
+// Register 注册
+func Register(c *gin.Context) {
+	var user models.User
+	err := c.BindJSON(&user)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"msg":  err.Error(),
+		})
+		return
+	}
+	err = userService.RegisterNewUser(&user)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"msg":  err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 1,
+		"msg":  "注册成功",
+	})
 }

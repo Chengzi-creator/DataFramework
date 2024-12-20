@@ -28,9 +28,18 @@ func (r *UserRepository) FindByUserID(userid int) (*models.User, error) {
 	return &user, nil
 }
 
-// ChangeByUserID 根据用户ID更改用户信息
-func (r *UserRepository) ChangeByUserID(user *models.User) error {
+// UpdateByUserID 根据用户ID更改用户信息
+func (r *UserRepository) UpdateByUserID(user *models.User) error {
 	err := utils.DB.Save(user).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// RegisterNewUser 注册新用户
+func (r *UserRepository) RegisterNewUser(user *models.User) error {
+	err := utils.DB.Create(user).Error
 	if err != nil {
 		return err
 	}
