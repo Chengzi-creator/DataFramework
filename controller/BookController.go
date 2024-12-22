@@ -13,13 +13,35 @@ var bookService = service.BookService{
 	Repo: &repository.BookRepository{},
 }
 
-// SearchBooks 根据书名查询符合书籍
+// SearchBooks 查询符合书籍
 func SearchBooks(c *gin.Context) {
+	var books []models.Book
+	var err error
 	// 获取查询数据
 	name := c.Query("book_name")
-
-	// 调用 Service 层查询书籍
-	books, err := bookService.SearchBooks(name)
+	seriesNo := c.Query("series_no")
+	publish := c.Query("publish")
+	keyword := c.Query("keyword")
+	writer := c.Query("writer")
+	// 判断搜索方式并查询书籍
+	if name != "" {
+		books, err = bookService.SearchBooksByName(name)
+	} else if seriesNo != "" {
+		books, err = bookService.SearchBooksBySeriesNo(seriesNo)
+	} else if publish != "" {
+		books, err = bookService.SearchBooksByPublish(publish)
+	} else if keyword != "" {
+		books, err = bookService.SearchBooksByKeyword(keyword)
+	} else if writer != "" {
+		books, err = bookService.SearchBooksByWriter(writer)
+	} else {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"code": 0,
+			"msg":  "未传递任何有效的查询参数",
+		})
+		return
+	}
+	//处理错误
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"code": 0,
@@ -27,7 +49,6 @@ func SearchBooks(c *gin.Context) {
 		})
 		return
 	}
-
 	//判断符合书籍是否空
 	if len(books) == 0 {
 		c.JSON(http.StatusOK, gin.H{

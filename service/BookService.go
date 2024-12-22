@@ -11,14 +11,50 @@ type BookService struct {
 	Repo *repository.BookRepository
 }
 
-// SearchBooks 根据书名查询符合书籍
-func (s *BookService) SearchBooks(name string) ([]models.Book, error) {
+// SearchBooksByName 根据书名查询符合书籍
+func (s *BookService) SearchBooksByName(name string) ([]models.Book, error) {
 	// 调用 Repository 层进行查询
 	books, err := s.Repo.FindBooksByName(name)
 	if err != nil {
 		return nil, errors.New("数据库查询失败")
 	}
 
+	return books, nil
+}
+
+// SearchBooksBySeriesNo 根据书号查询符合书籍
+func (s *BookService) SearchBooksBySeriesNo(seriesNo string) ([]models.Book, error) {
+	books, err := s.Repo.FindBooksBySeriesNo(seriesNo)
+	if err != nil {
+		return nil, errors.New("数据库查询失败")
+	}
+	return books, nil
+}
+
+// SearchBooksByPublish 根据出版社查询符合书籍
+func (s *BookService) SearchBooksByPublish(publish string) ([]models.Book, error) {
+	books, err := s.Repo.FindBookByPublish(publish)
+	if err != nil {
+		return nil, errors.New("数据库查询失败")
+	}
+	return books, nil
+}
+
+// SearchBooksByKeyword 根据关键词查询符合书籍
+func (s *BookService) SearchBooksByKeyword(keyword string) ([]models.Book, error) {
+	books, err := s.Repo.FindBookByKeyword(keyword)
+	if err != nil {
+		return nil, errors.New("数据库查询失败")
+	}
+	return books, nil
+}
+
+// SearchBooksByWriter 根据作者查询符合书籍
+func (s *BookService) SearchBooksByWriter(writer string) ([]models.Book, error) {
+	books, err := s.Repo.FindBookByWriter(writer)
+	if err != nil {
+		return nil, errors.New("数据库查询失败")
+	}
 	return books, nil
 }
 

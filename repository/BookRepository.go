@@ -18,6 +18,46 @@ func (r *BookRepository) FindBooksByName(name string) ([]models.Book, error) {
 	return books, nil
 }
 
+// FindBooksBySeriesNo 根据书号查询符合书籍
+func (r *BookRepository) FindBooksBySeriesNo(seriesNo string) ([]models.Book, error) {
+	var books []models.Book
+	err := utils.DB.Where("series_no=?", seriesNo).Find(&books).Error
+	if err != nil {
+		return nil, err
+	}
+	return books, nil
+}
+
+// FindBookByPublish 根据出版社查询符合书籍
+func (r *BookRepository) FindBookByPublish(publish string) ([]models.Book, error) {
+	var books []models.Book
+	err := utils.DB.Where("publish=?", publish).Find(&books).Error
+	if err != nil {
+		return nil, err
+	}
+	return books, nil
+}
+
+// FindBookByKeyword 根据关键词查询符合书籍
+func (r *BookRepository) FindBookByKeyword(keyword string) ([]models.Book, error) {
+	var books []models.Book
+	err := utils.DB.Where("keyword=?", keyword).Find(&books).Error
+	if err != nil {
+		return nil, err
+	}
+	return books, nil
+}
+
+// FindBookByWriter 根据作者查询符合书籍
+func (r *BookRepository) FindBookByWriter(writer string) ([]models.Book, error) {
+	var books []models.Book
+	err := utils.DB.Where("writer LIKE ?", "%"+writer+"%").Find(&books).Error
+	if err != nil {
+		return nil, err
+	}
+	return books, nil
+}
+
 // FindBookByID 根据 ID 查询单个书籍信息
 func (r *BookRepository) FindBookByID(bookID int) (*models.Book, error) {
 	var book models.Book

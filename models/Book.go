@@ -9,7 +9,7 @@ type Book struct {
 	Keyword       string         `gorm:"type:varchar(150)" json:"keyword"`                                        // 关键词
 	Stock         int            `gorm:"default:0" json:"stock"`                                                  // 库存量，默认为0
 	Supplier      string         `gorm:"type:varchar(10)" json:"supplier"`                                        // 供应商信息
-	SeriesNo      int            `gorm:"not null" json:"series_no"`                                               // 系列编号
+	SeriesNo      string         `gorm:"type:varchar(150);not null" json:"series_no"`                             // 系列编号
 	Writer        string         `gorm:"writer" json:"writer"`                                                    // 作者
 	StoreLocation string         `gorm:"type:varchar(150);not null" json:"store_location"`                        // 存储位置
 	BookShortages []BookShortage `gorm:"foreignKey:BookID;constraint:OnDelete:CASCADE;" json:"-"`                 // 书籍短缺的外键关系
