@@ -4,10 +4,11 @@ import (
 	"InterLibrarySystem/models"
 	"InterLibrarySystem/repository"
 	"InterLibrarySystem/service"
-	"github.com/gin-gonic/gin"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/gin-gonic/gin"
 )
 
 // 初始化 TicketService
@@ -18,7 +19,7 @@ var ticketService = service.TicketService{
 // GetTicketsByUserID  获取用户订单
 func GetTicketsByUserID(c *gin.Context) {
 	// 从 token 中获取用户ID
-	userid := c.Query("userid")
+	userid := c.Query("user_id")
 	uid, _ := strconv.Atoi(userid)
 
 	// 调用 Service 层获取订单
@@ -73,7 +74,7 @@ func CreateTicket(c *gin.Context) {
 	address := c.PostForm("address")
 
 	// 从 query中获取用户 ID
-	userid := c.Query("userid")
+	userid := c.Query("user_id")
 	uid, _ := strconv.Atoi(userid)
 
 	// 从 BookService 获取书籍信息

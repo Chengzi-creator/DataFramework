@@ -4,10 +4,11 @@ import (
 	"InterLibrarySystem/models"
 	"InterLibrarySystem/repository"
 	"InterLibrarySystem/service"
-	"github.com/gin-gonic/gin"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 var userService = service.UserService{
@@ -32,6 +33,7 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"code":          1,
 		"msg":           "登陆成功",
+		"use_id":        user.ID,
 		"is_administer": user.IsAdminister,
 	})
 }
@@ -39,7 +41,7 @@ func Login(c *gin.Context) {
 // ShowUserinfo 展示用户信息
 func ShowUserinfo(c *gin.Context) {
 	//获取userid
-	userid := c.Query("userid")
+	userid := c.Query("user_id")
 	uid, _ := strconv.Atoi(userid)
 	//查询信息
 	user, err := userService.FindByUserID(uid)
@@ -60,7 +62,7 @@ func ShowUserinfo(c *gin.Context) {
 // ChangeByUserID 根据用户ID更改用户信息
 func ChangeByUserID(c *gin.Context) {
 	//获取userid
-	userid := c.Query("userid")
+	userid := c.Query("user_id")
 	uid, _ := strconv.Atoi(userid)
 	//获取更改后的信息
 	var newUser models.User
@@ -86,6 +88,17 @@ func ChangeByUserID(c *gin.Context) {
 	user.Password = newUser.Password
 	user.Address = newUser.Address
 	err = userService.UpdateByUserID(user)
+	if err != nil {
+		c.JSON(http.StatusOK, gin.H{
+			"code": 0,
+			"msg":  err.Error(),
+		})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"code": 1,
+		"msg":  "更改成功",
+	})
 }
 
 // Register 注册

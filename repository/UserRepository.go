@@ -21,7 +21,7 @@ func (r *UserRepository) FindByUsername(username string) (*models.User, error) {
 // FindByUserID 根据用户ID查询用户
 func (r *UserRepository) FindByUserID(userid int) (*models.User, error) {
 	var user models.User
-	err := utils.DB.Where("user_id = ?", userid).First(&user).Error
+	err := utils.DB.Where("id = ?", userid).First(&user).Error
 	if err != nil {
 		return nil, err
 	}
