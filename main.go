@@ -26,13 +26,15 @@ func main() {
 	//普通用户
 	UserGroup := r.Group("/user")
 	{
-		UserGroup.GET("/index")                                      //菜单
-		UserGroup.GET("/search", controller.SearchBooks)             //搜索
-		UserGroup.GET("/search/:book_id", controller.SearchBookByID) //书籍详情
-		UserGroup.POST("/create_ticket", controller.CreateTicket)    //创建订单
-		UserGroup.GET("/ticket", controller.GetTicketsByUserID)      //订单详情
-		UserGroup.GET("/userinfo", controller.ShowUserinfo)          //用户信息
-		UserGroup.PUT("/userinfo", controller.ChangeByUserID)        //更改信息
+		UserGroup.GET("/index")                          //菜单
+		UserGroup.GET("/search", controller.SearchBooks) //搜索
+		{
+			UserGroup.GET("/search/:book_id", controller.SearchBookByID)         //书籍详情
+			UserGroup.POST("/search/:user_id/:book_id", controller.CreateTicket) //创建订单
+		}
+		UserGroup.GET("/ticket", controller.GetTicketsByUserID) //订单详情
+		UserGroup.GET("/userinfo", controller.ShowUserinfo)     //用户信息
+		UserGroup.PUT("/userinfo", controller.ChangeByUserID)   //更改信息
 	}
 
 	//管理员
