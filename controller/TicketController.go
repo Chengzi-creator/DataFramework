@@ -53,33 +53,23 @@ func GetTicketsByUserID(c *gin.Context) {
 
 // CreateTicket 创建订单
 func CreateTicket(c *gin.Context) {
-	//获取userid
-	userid, _ := strconv.Atoi(c.Param("user_id"))
-	// 获取书籍 ID
-	bookId, err := strconv.Atoi(c.Param("book_id"))
+	var req struct {
+		userID   int    `form:"user_id" binding:"required"`
+		bookID   int    `form:"book_id" binding:"required"`
+		address  string `form:"address" binding:"required"`
+		quantity int    `form:"quantity" binding:"required"`
+	}
+	err := c.BindJSON(&req)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": 0,
-			"msg":  "书籍ID无效",
+			"msg":  err.Error(),
 		})
 		return
 	}
-
-	// 获取订单数量
-	quantity, err := strconv.Atoi(c.PostForm("quantity"))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"code": 0,
-			"msg":  "数量无效",
-		})
-		return
-	}
-
-	// 获取地址
-	address := c.PostForm("address")
 
 	// 从 BookService 获取书籍信息
-	book, err := bookService.GetBookByID(bookId)
+	book, err := bookService.GetBookByID(req.bookID)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"code": 0,
@@ -89,8 +79,8 @@ func CreateTicket(c *gin.Context) {
 	}
 
 	//判断余额是否足够
-	user, _ := userServiceTicket.FindByUserID(userid)
-	price := float64(quantity) * book.Price
+	user, _ := userServiceTicket.FindByUserID(req.userID)
+	price := float64(req.quantity) * book.Price
 	var newBalance float64
 	switch user.CreditRating {
 	case 0:
@@ -109,14 +99,15 @@ func CreateTicket(c *gin.Context) {
 			"code": 1,
 			"msg":  "余额不足",
 		})
+		return
 	}
 	// 创建订单
 	ticket := models.Ticket{
-		Price:       book.Price,
+		Price:       newBalance,
 		Time:        time.Now(),
-		Quantity:    quantity,
-		UserID:      userid,
-		Address:     address,
+		Quantity:    req.quantity,
+		UserID:      req.userID,
+		Address:     req.address,
 		Description: book.Name,
 	}
 	err = ticketService.CreateTicket(ticket)
@@ -135,6 +126,7 @@ func CreateTicket(c *gin.Context) {
 			"code": 0,
 			"msg":  err.Error(),
 		})
+		return
 	}
 
 	c.JSON(http.StatusOK, gin.H{
